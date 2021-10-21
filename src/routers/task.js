@@ -18,12 +18,44 @@ router.post("/tasks", auth, async (req, res) => {
   }
 });
 
+// get /tasks?completed  to get completed tasks
+// get /tasks?limit=10&skip=10
+// get /tasks?sortBy=createdAt:desc
 router.get("/tasks", auth, async (req, res) => {
-  try {
-    const task = await Task.find({ owner: req.user._id });
-    res.status(200).send(task);
-  } catch (e) {
-    res.status(500).send(e);
+  // const match = {};
+  const sort = {};
+
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(":");
+    sort[parts[0]] = parts[1] === "desc" ? -1 : 1;
+    console.log(sort);
+  }
+
+  if (req.query.completed) {
+    try {
+      const task = await Task.find({
+        owner: req.user._id,
+        completed: req.query.completed,
+      })
+        .limit(parseInt(req.query.limit))
+        .skip(parseInt(req.query.skip))
+        .sort(sort);
+      res.status(200).send(task);
+    } catch (e) {
+      res.status(500).send(e);
+    }
+  } else {
+    try {
+      const task = await Task.find({
+        owner: req.user._id,
+      })
+        .limit(parseInt(req.query.limit))
+        .skip(parseInt(req.query.skip))
+        .sort(sort);
+      res.status(200).send(task);
+    } catch (e) {
+      res.status(500).send(e);
+    }
   }
 });
 

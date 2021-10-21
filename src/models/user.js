@@ -4,53 +4,58 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Task = require("./task");
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    trim: true,
-  },
-  email: {
-    type: String,
-    trim: true,
-    unique: true,
-    lowercase: true,
-    validate(value) {
-      if (!validator.default.isEmail(value)) {
-        throw new Error("Inavlid email");
-      }
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      trim: true,
     },
-    required: true,
-  },
-  password: {
-    type: String,
-    trim: true,
-    required: true,
-    validate(value) {
-      console.log(value);
-      if (value.length < 6) {
-        console.log("error");
-        throw new Error("invalid Password");
-      }
+    email: {
+      type: String,
+      trim: true,
+      unique: true,
+      lowercase: true,
+      validate(value) {
+        if (!validator.default.isEmail(value)) {
+          throw new Error("Inavlid email");
+        }
+      },
+      required: true,
     },
-  },
-  age: {
-    type: Number,
-    default: 0,
-    validate(value) {
-      if (value < 0) {
-        throw new Error("Age is not valid");
-      }
-    },
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
+    password: {
+      type: String,
+      trim: true,
+      required: true,
+      validate(value) {
+        console.log(value);
+        if (value.length < 6) {
+          console.log("error");
+          throw new Error("invalid Password");
+        }
       },
     },
-  ],
-});
+    age: {
+      type: Number,
+      default: 0,
+      validate(value) {
+        if (value < 0) {
+          throw new Error("Age is not valid");
+        }
+      },
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 userSchema.virtual("tasks", {
   ref: "Task",
