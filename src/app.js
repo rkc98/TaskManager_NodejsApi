@@ -47,6 +47,6 @@ app.post("/upload", upload.single("upload"), (req, res) => {
 // };
 // jwtFunction();
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log("server is running on port " + port);
 });
