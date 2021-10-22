@@ -89,6 +89,23 @@ router.get("/users", async (req, res) => {
   }
 });
 
+router.get("/users/:id/avatar", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user || !user.avatar) {
+      throw new Error("user or user profile pic not present");
+    }
+    res.send({
+      imgSrc: user.avatar,
+    });
+  } catch (err) {
+    res.status(404).send({
+      message: err,
+    });
+  }
+});
+
 // add users
 router.post("/users", async (req, res) => {
   const user = new User(req.body);
