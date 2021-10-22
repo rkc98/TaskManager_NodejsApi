@@ -4,6 +4,10 @@ const User = require("../models/user");
 const auth = require("../middlewares/Auth");
 const multer = require("multer");
 const path = require("path");
+const {
+  sendEmail,
+  sendEmailAfterDeletingAcccount,
+} = require("../emails/accounts");
 
 // get individual users
 router.get("/users/me", auth, async (req, res) => {
@@ -112,6 +116,7 @@ router.post("/users", async (req, res) => {
   try {
     // await user.save();
     const token = await user.generateAuthToken();
+    sendEmail(user.email, user.name);
     res.status(201).send({ user, token });
     // res.status(201).send(user);
   } catch (e) {
@@ -247,6 +252,7 @@ router.patch("/users/me", auth, async (req, res) => {
 router.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
+    sendEmailAfterDeletingAcccount(req.user.email, req.user.name);
     res.send(req.user);
   } catch (e) {
     res.status(500).send(e);
