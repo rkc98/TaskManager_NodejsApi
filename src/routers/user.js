@@ -2,6 +2,8 @@ const express = require("express");
 const router = new express.Router();
 const User = require("../models/user");
 const auth = require("../middlewares/Auth");
+const multer = require("multer");
+const path = require("path");
 
 // get individual users
 router.get("/users/me", auth, async (req, res) => {
@@ -12,6 +14,50 @@ router.get("/users/me", auth, async (req, res) => {
     res.status(500).send(e);
   }
 });
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "images/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); //Appending extension
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1000000, //1MB
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error("please upload an image"));
+    }
+    cb(undefined, true);
+  },
+});
+
+//upload images on server
+router.post(
+  "/users/me/avatar",
+  upload.single("avatar"),
+  (req, res) => {
+    try {
+      res.status(200).send({
+        message: "profile image uploaded sucessfully",
+      });
+    } catch (error) {
+      res.status(500).send({
+        message: error,
+      });
+    }
+  },
+  (err, req, res, next) => {
+    res.status(400).send({
+      message: err.message,
+    });
+  }
+);
 
 // get all users route
 router.get("/users", async (req, res) => {

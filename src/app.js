@@ -5,12 +5,24 @@ const app = express();
 const userRoutes = require("./routers/user");
 const taskRoutes = require("./routers/task");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+const path = require("path");
 
 const port = process.env.PORT || 3000;
 
 app.use(express.json()); // converts json data into objects
 app.use(userRoutes);
 app.use(taskRoutes);
+// app.use(express.static(__dirname));
+const upload = multer({
+  dest: "images",
+});
+
+app.post("/upload", upload.single("upload"), (req, res) => {
+  res.send({
+    message: "image Uploaded successfully",
+  });
+});
 
 // const jwtFunction = async () => {
 //   // const password = "Pass@123";
