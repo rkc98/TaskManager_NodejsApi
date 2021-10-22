@@ -63,6 +63,22 @@ router.post(
   }
 );
 
+//delete the profile avatar
+
+router.delete("/users/me/avatar", auth, async (req, res) => {
+  try {
+    req.user.avatar = undefined;
+    await req.user.save();
+    res.status(200).send({
+      message: "profile picture deleted",
+    });
+  } catch (error) {
+    res.status(500).send({
+      error: error,
+    });
+  }
+});
+
 // get all users route
 router.get("/users", async (req, res) => {
   try {
