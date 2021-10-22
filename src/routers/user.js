@@ -37,12 +37,16 @@ const upload = multer({
   },
 });
 
-//upload images on server
+//upload profile avatar images on server
 router.post(
   "/users/me/avatar",
+  auth,
   upload.single("avatar"),
-  (req, res) => {
+  async (req, res) => {
     try {
+      // console.log(req.file);
+      req.user.avatar = req.file.path; // adding path to the database
+      await req.user.save();
       res.status(200).send({
         message: "profile image uploaded sucessfully",
       });
