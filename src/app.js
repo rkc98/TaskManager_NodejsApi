@@ -7,6 +7,7 @@ const taskRoutes = require("./routers/task");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
+const cors = require("cors");
 
 const port = process.env.PORT || 3000;
 app.use(
