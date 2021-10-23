@@ -9,7 +9,11 @@ const multer = require("multer");
 const path = require("path");
 
 const port = process.env.PORT || 3000;
-
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use(express.json()); // converts json data into objects
 app.use(userRoutes);
 app.use(taskRoutes);
