@@ -104,7 +104,7 @@ router.patch("/tasks/:id", auth, async (req, res) => {
   }
 });
 
-router.delete("/users/:id", auth, async (req, res) => {
+router.delete("/tasks/:id", auth, async (req, res) => {
   const id = req.params.id;
 
   try {
@@ -119,17 +119,17 @@ router.delete("/users/:id", auth, async (req, res) => {
     });
   }
 });
-router.delete("/tasks/:id", async (req, res) => {
-  const id = req.params.id;
+// router.delete("/tasks/:id", async (req, res) => {
+//   const id = req.params.id;
 
-  try {
-    const result = await Task.findByIdAndDelete(id, { new: true });
-    res.status(200).send(result);
-  } catch (error) {
-    res.status(404).send({
-      message: error,
-    });
-  }
-});
+//   try {
+//     const result = await Task.findByIdAndDelete(id, { new: true });
+//     res.status(200).send(result);
+//   } catch (error) {
+//     res.status(404).send({
+//       message: error,
+//     });
+//   }
+// });
 
 module.exports = router;
